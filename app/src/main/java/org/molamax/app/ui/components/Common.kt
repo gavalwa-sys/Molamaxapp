@@ -1,4 +1,4 @@
-```kotlin
+
 package org.molamax.app.ui.components
 
 import androidx.compose.foundation.background
@@ -45,7 +45,10 @@ fun PillTag(text: String) {
 }
 
 @Composable
-fun SectionTitle(title: String, subtitle: String? = null) {
+fun SectionTitle(
+    title: String,
+    subtitle: String? = null
+) {
     Column {
         Text(
             title,
@@ -67,7 +70,7 @@ fun SectionTitle(title: String, subtitle: String? = null) {
 @Composable
 fun MolaCard(
     modifier: Modifier = Modifier,
-    content: ColumnScopeContent
+    content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit
 ) {
     Card(
         modifier = modifier.border(
@@ -84,19 +87,16 @@ fun MolaCard(
         )
     ) {
         Column(
-            Modifier.padding(15.dp),
+            modifier = Modifier.padding(15.dp),
             content = content
         )
     }
 }
 
-typealias ColumnScopeContent =
-    @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit
-
 @Composable
 fun FlowTags(tags: List<String>) {
-    // Simple wrapping row substitute using chunks of 2-3
-    // to avoid an extra dependency on FlowRow.
+    // Simple wrapping row substitute using chunks of 2.
+    // This avoids requiring the FlowRow dependency.
     val rows = tags.chunked(2)
 
     Column {
@@ -105,11 +105,11 @@ fun FlowTags(tags: List<String>) {
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier.padding(bottom = 6.dp)
             ) {
-                row.forEach {
-                    PillTag(it)
+                row.forEach { tag ->
+                    PillTag(tag)
                 }
             }
         }
     }
 }
-```
+
