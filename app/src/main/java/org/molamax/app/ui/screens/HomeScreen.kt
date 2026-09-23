@@ -1,4 +1,4 @@
-```kotlin
+
 package org.molamax.app.ui.screens
 
 import androidx.compose.foundation.background
@@ -240,4 +240,4 @@ private fun FeatureRow(
         }
     }
 }
-```
+
