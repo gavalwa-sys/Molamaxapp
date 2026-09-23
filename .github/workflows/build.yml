@@ -31,32 +31,12 @@ jobs:
         with:
           gradle-version: "8.9"
 
-      - name: Find Android project
-        run: |
-          PROJECT_DIR=$(dirname "$(find . -name settings.gradle.kts -type f -print -quit)")
-
-          if [ -z "$PROJECT_DIR" ] || [ "$PROJECT_DIR" = "." ]; then
-            echo "Android Gradle project not found."
-            find . -maxdepth 4 -type f | sort
-            exit 1
-          fi
-
-          echo "Android project found at: $PROJECT_DIR"
-          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
-
-      - name: Build debug APK
-        run: |
-          cd "$PROJECT_DIR"
-          gradle assembleDebug
-
-      - name: Find APK
-        run: |
-          find "$PROJECT_DIR" -type f -name "*.apk" -print
+      - name: Build APK
+        run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Molamax-debug-apk
-          path: "**/build/outputs/apk/debug/*.apk"
+          path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
-
