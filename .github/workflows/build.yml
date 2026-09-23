@@ -1,0 +1,42 @@
+```yaml
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+  pull_request:
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Make Gradle executable
+        working-directory: MolamaxApp-Android/MolamaxApp
+        run: chmod +x gradlew
+
+      - name: Build APK
+        working-directory: MolamaxApp-Android/MolamaxApp
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Molamax-debug-apk
+          path: MolamaxApp-Android/MolamaxApp/app/build/outputs/apk/debug/*.apk
+```
