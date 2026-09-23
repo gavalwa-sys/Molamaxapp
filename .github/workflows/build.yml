@@ -39,4 +39,4 @@ jobs:
         with:
           name: Molamax-debug-apk
           path: MolamaxApp-Android/MolamaxApp/app/build/outputs/apk/debug/*.apk
-```
+
