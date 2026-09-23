@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Java 17
@@ -31,13 +31,31 @@ jobs:
         with:
           gradle-version: "8.9"
 
-      - name: Build APK
-        working-directory: MolamaxApp-Android/MolamaxApp
-        run: gradle assembleDebug
+      - name: Find Android project
+        run: |
+          PROJECT_DIR=$(dirname "$(find . -name settings.gradle.kts -type f -print -quit)")
+
+          if [ -z "$PROJECT_DIR" ] || [ "$PROJECT_DIR" = "." ]; then
+            echo "Android Gradle project not found."
+            find . -maxdepth 4 -type f | sort
+            exit 1
+          fi
+
+          echo "Android project found at: $PROJECT_DIR"
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+
+      - name: Build debug APK
+        run: |
+          cd "$PROJECT_DIR"
+          gradle assembleDebug
+
+      - name: Find APK
+        run: |
+          find "$PROJECT_DIR" -type f -name "*.apk" -print
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Molamax-debug-apk
-          path: MolamaxApp-Android/MolamaxApp/app/build/outputs/apk/debug/*.apk
+          path: "**/build/outputs/apk/debug/*.apk"
           if-no-files-found: error
